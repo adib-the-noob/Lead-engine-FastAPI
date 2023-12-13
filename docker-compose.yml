@@ -1,0 +1,34 @@
+version: '3'
+services:
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: leadengine-dev-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  engine:
+    build:
+      context: ./engine # Build context for the FastAPI service
+    container_name: leadengine
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    restart: always
+
+    env_file:
+      - .env
+    environment:
+      - GMAIL_APP_PASSWORD=veea ivfz vojx ojnb
+      - GMAIL_APP_EMAIL=mdadib550@gmail.com
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+networks:
+  default:
+    external:
+      name: leadengine-network
